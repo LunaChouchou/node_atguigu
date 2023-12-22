@@ -1,0 +1,81 @@
+- npm init
+  - 初始化包 会创建一个package.json 每个包都有的配置文件
+  - 默认包名是文件夹名
+- npm init -y
+  - 快速创建 全部默认值 文件夹名不包含中文和大写字母
+- 搜索包
+  - npm s xxxxx
+  - npmjs.com
+- npm i / npm install
+  - package-lock.json 固定安装的包的版本
+  - require("uniq")(arr)
+    - 以arr作为参数执行uniq
+  - 安装包→导入函数require
+    - 导入的是node_modules下的uniq文件夹
+    - 找该文件夹下的package.json中的main属性中的文件uniq.js 里面有function
+      - require('uniq')
+      - require('./node_modules/uniq')
+      - require('./node_modules/uniq/uniq.js')
+    - 'uniq'写法 找不到uniq文件夹就往上级找
+- 生产环境/开发环境 选项
+  - -S 生产依赖
+    - 开发和正式运行使用
+  - -D 开发依赖
+    - 只在开发阶段使用 开发工具之类的？
+- npm全局安装
+  - -g
+  - nodemon库 热启动
+    - 代替node命令使用可以有更新自动重启效果
+  - 局部安装包
+    - 通过require/import引入
+    - 保存在项目node_modules文件夹下（从项目根目录执行）
+    - 在一个特定项目中不加-g/global时是局部安装
+  - 全局安装包
+    - 通过独立命令使用
+    - npm root -g 查看全局安装包位置
+- 修改windows执行策略
+  - ①set-ExecutionPolicy remoteSigned 选A
+  - ②更换命令行类型 加号三角 选择默认配置文件 cmd 把powershell换成cmd（就是建cmd终端）
+- 环境变量
+  - exe和cmd可以不带.后缀直接从cmd打开
+  - 地址栏打cmd可以从这个位置打开cmd、
+  - 当前文件夹→环境变量的Path
+  - 用户变量、系统变量
+- 安装所有包的依赖
+  - 根据package.json package-lock.json安装所有依赖
+  - node_modules大多数情况下都不会被存入git、svn
+  - clone后不会有node_modules 要用npm install安装其他包
+- 安装指定版本包、删除包
+  - package.json里的版本是范围约束 package-lock.json里有实际版本
+  - npm i xxxx@x.x.x 
+  - npm r xxxx 卸载
+  - npm r -g xxxx 卸载全局包
+- npm配置命令别名
+  - package.json "script"
+  - npm run xxx
+  - run, test可以省略run
+  - start require自动向上目录寻找 （找package.jsonかな）
+- cnpm 淘宝镜像
+- yarn
+  - javascript包管理工具
+  - yarn init
+  - yarn add xxxx
+  - yarn add xxxx --dev 开发依赖 --dev是npm中的-D
+  - yarn 等同于npm i 把所有依赖都安装
+  - yarn remove xxx
+  - yarn remove xxxx
+  - yarn xxxx 别名
+    - yarn start
+  - 全局安装不好使
+    - yarn global add xxxx
+    - 无法运行xxxx
+    - yarn global bin查看安装位置
+    - 需要手动配置环境变量
+- npm和yarn的选择
+  - 根据项目锁文件判断
+  - package-lock.json
+  - yarn.lock
+- 包管理工具
+- nvm 切换包版本工具
+  - 
+  - 
