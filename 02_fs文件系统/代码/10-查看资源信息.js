@@ -7,7 +7,7 @@ fs.stat('../资料/笑看风云.mp4', (err, data) => {
     console.log('操作失败');
     return;
   }
-  // console.log(data);
+  console.log(data);
   // isFile 
   console.log(data.isFile());
   // isDirectory

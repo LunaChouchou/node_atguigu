@@ -14,4 +14,4 @@ ws.write('问渠那得清如许\r\n');
 ws.write('为有源头活水来\r\n');
 
 //4. 关闭通道
-// ws.close();
+ws.close();

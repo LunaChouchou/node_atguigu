@@ -1,0 +1,14 @@
+- 退出python交互模式 ctrl+z
+- node -v
+- python --version
+- python -V
+- {}, null, undefined
+  - 不一定是对象 只是还没说↓
+    - 未赋值的变量具有undefined值
+      - let var;
+  - 肯定是对象↓
+    - null表示引用空对象（一个特殊对象…）（不引用对象）
+      - let var = null;
+    - {}表示引用空的普通对象
+      - let var = {};
+- 
