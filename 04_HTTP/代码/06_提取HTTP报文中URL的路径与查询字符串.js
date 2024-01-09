@@ -6,6 +6,12 @@ const server = http.createServer((request, response) => {
   //实例化 URL 的对象
   // let url = new URL('/search?a=100&b=200', 'http://127.0.0.1:9000');
   let url = new URL(request.url, 'http://127.0.0.1');
+  console.log(url.href)
+  // let url2 = new URL('http://127.0.0.1',request.url); //TypeError
+  // console.log(url2.href)
+  // let url3 = new URL(request.url); //TypeError
+  // console.log(url3.href)
+  
   //输出路径
   console.log(url.pathname);
   //输出 keyword 查询字符串

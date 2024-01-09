@@ -130,7 +130,7 @@
     - `rm` 建议使用
   - 都有Sync版本
 - fs查看资源状态
-  - `stat('路径', 接err+data回调函数)`
+  - `('路径', 接err+data回调函数)`
     - err和data都是对象
       - atime 最后访问
       - mtime 最后修改
@@ -142,7 +142,19 @@
   - D:/...
   - /... 盘符根目录
 - fs相对路径的bug
-  - fs相对路径的参照物不是js文件所在目录 而是命令行工作目录
+  - fs（js全般）相对路径的参照物不是js文件所在目录 而是命令行工作目录
+    - 仅限于执行js脚本的情况？
+  - 扩展：工作目录/文件所在目录
+    - 370行 live-server开启根目录为vscode打开的文件夹
+    - 工作目录
+      - 执行`node myScript.js`时 读到有相对路径的语句
+    - 文件所在目录
+      - 在模块中引入其他模块时require语句
+        - 个人理解：src下文件编译时会被构建工具处理 所以根据编译前文件夹结构使用相对路径没有问题
+      - html引入css文件
+        - 针对public下文件的个人理解：
+          - public文件夹下内容不会被编译 所以根据文件夹结构引入没有问题
+          - public文件夹浏览器有机会直接请求 在浏览器请求时 这些文件所在目录/文件内相对路径中包含的根目录public会被替换成基本URL 所以public下的资源还会有对基本URL的解释产生分歧而造成的问题（见react_staging_12_使用路由样式丢失问题 为什么路由路径会让基本URL发生偏差未能理解 路由应该指的是浏览器地址栏里写的东西用于浏览器判断当前要显示的页面 基本URL应该更偏向浏览器内部发送请求的地址）
   - `__dirname` like全局变量 所在文件的目录的绝对路径
 - fs练习 批量重命名
   - 遍历数组 forEach(item => {})
@@ -154,7 +166,7 @@
       let name = data[1];
       ```
   - Number(num) 强制类型转换 String→int
-  - `` 模板字符串 可以更方便地构建包含变量值${xx}的字符串，而不需要使用字符串拼接或连接符号
+  - 豆知识：`` 模板字符串 可以更方便地构建包含变量值${xx}的字符串，而不需要使用字符串拼接或连接符号
 
 ## path模块
 - 导入path模块
@@ -173,4 +185,227 @@
 - extname方法 获取扩展名 .js
 
 ## http协议
-- 
+- http报文
+  - fiddler软件 查看报文 burpsuit
+- 请求报文结构
+  - **请求行**
+    - 请求方法
+      - GET 获取
+      - POST 新增
+      - PUT/PATCH 更新
+      - DELETE 删除
+      - HEAD, OPTIONS, CONNECT, TRACE
+    - URL
+      - 协议名://主机名:端口号/路径?查询字符串
+    - HTTP协议版本号
+  - **请求头**
+    - 键值对组成 记录浏览器相关信息 交互行为
+  - 空行
+  - **请求体**
+    - 键值对、JSON形式
+- 响应报文结构与响应行
+  - **响应行**
+    - HTTP版本号
+    - 响应状态码 响应状态的描述
+      - 200成功 OK
+      - 403禁止请求 Forbidden
+      - 404找不到资源 Not Found
+      - 500服务器内部错误 Internal Server Error
+        - 1xx信息响应
+        - 2xx成功响应
+        - 3xx重定向消息
+        - 4xx客户端错误响应
+        - 5xx服务器错误响应
+  - **响应头**
+    - 标准/自定义响应头
+    - Content-Type
+  - 空行
+  - **响应体**
+    - HTML, CSS, JS, 图片, 视频, JSON
+
+## 网络基础概念
+- IP
+  - 32bit的2进制 4字节
+- IP分类
+  - 共享IP
+    - 区域共享 家庭共享
+      - 路由器IP 广域网IP/公网IP
+        - 下述以外
+      - 给各个端末分配局域网IP/私网IP
+        - 192.168.0.0~192.168.255.255
+        - 172.16.0.0~172.31.255.255
+        - 10.0.0.0~10.255.255.255
+      - 本地回环IP地址
+        - 127.0.0.1~127.255.255.254 指代当前本机
+- 端口
+  - 应用程序的数字表示 0~65505 应用程序之间通信
+
+## http模块
+- 01_创建HTTP服务端
+  - 1导入http模块
+    - `require('http');`
+  - 2server = http.createServer(回调) 对象.方法
+    - `const server = http.createServer((request, response) => {`
+    - 接收一个函数实参 匿名/箭头/function都可 接收到http请求时执行
+      - 该函数接收2个形参
+      - 该函数内部调用的时候接收2个实参
+        - 请求报文的封装对象 request
+          - 获取请求行、请求体等 request.xxxx
+        - 响应报文封装对象 response
+          - 设置响应头、响应体等 response.end
+  - 3监听端口，启动服务
+    - `server.listen(9000, () => {`
+    - 选择端口号
+    - 回调函数
+      - 启动成功后执行
+- http服务注意事项
+  - 热部署 nodemon库
+  - 设置响应头setHeader 设置字符集 解决中文乱码
+  - http默认端口80 https443 主机名=IP地址
+  - 资源监视器リソースモニター找到对应端口使用程序
+    - 侦听端口リッスンポート
+- 02_浏览器查看HTTP报文
+  - 浏览器每次都会发送一个favicon.ico的请求
+  - 大多数get请求的请求体是空的
+  - 开发者工具 network
+    - **标头标签页**
+      - 请求标头
+        - 请求头
+        - 查看源代码 请求行+请求头
+      - 响应标头
+        - 响应头
+        - 查看源代码 响应行+响应头
+    - **载荷标签页**（有请求体时显示※）
+      - 请求体（已格式化）
+        - 查看源代码 原始请求体内容
+      - url查询字符串（已格式化）（属于GET参数 非请求体※矛盾）
+    - **响应标签页**
+      - 原始响应体内容
+- **request.param**
+  - 03_获取请求行和请求头
+    - 请求行 `request.method/url/httpVersion`
+    - 请求头 `request.headers` 对象
+      - 双拼词有一个单引号包起来
+      - `request.headers.host`
+  - 04_获取请求体
+      ```js
+      let body = '';
+      request.on('data', chunk => {
+      request.on('end', () => {
+      ```
+    - 现在url的路径怎么变都只会响应相同的内容 没有设定
+    - chunk是一个Buffer 做加法运算会自动转换成字符串
+    - 监听方法on
+      - 附加函数方法到特定的事件 包括数据流中的事件
+      - 多使用事件来处理异步操作
+        - 绑定data事件 接收到数据时触发
+        - 绑定end事件 数据传完时触发
+        - （response.end 返回响应体）
+    - post的表单内容会在请求体里
+- **url.method/param**
+  - 05_获取请求路径与查询字符串
+    - 导入url模块 用于解析url的
+    - `let res = url.parse(request.url)` 对象
+      - `res.pathname` pathname属性 路径 基本URL右侧 /开始内容
+      - query
+        - search属性 '?keyword=h5'
+        - query属性 'keyword=h5'
+        - 都是字符串
+    - `url.parse(request.url,true)` query属性将会被传递为一个对象
+      - [Object: null prototype] 提示这个对象的原型是null
+      - `res.query.keyword`
+      - 如果请求里不含keyword 返回undefined
+  - 06_获取请求路径与查询字符串(新)
+    - 实例化URL对象 
+      - `let url = new URL();`
+        - 1个参数 完整URL
+        - 2个参数 拼成完整URL
+          - 相对URL,基本URL→基本URL+相对URL
+          - 完整URL,参数2→完整URL
+          - 基本URL：协议~主机名(端口)的部分
+        - 返回1个对象 属性包括URL的各个部分
+        - `url.search` 字符串形式query
+        - `url.searchParams` 对象形式query
+          - `get('keyname')` 取出 因为是map形式
+          - 没有键对应的值的话会输出null 原型URLSearchParams设计成这样的
+      - 前端JS也可以这样实例化
+- 07_http模块练习_HTTP请求练习
+  - 1次请求只能对应1个end方法
+  - 需要定义url不符合预期的情况 不然没有response
+- 08_设置HTTP响应报文
+  - `response.statusCode = nnn` 设置响应状态码
+    - 不设置默认200
+    - 可多次使用 覆盖上次内容
+  - `response.statusMessage = 'xxx'` 设置响应状态描述
+    - 不设置默认跟随状态码
+  - `response.setHeader('key','value')` 设置响应头
+    - 内容设置数组可以设置多个同名响应头 比如set-cookie
+  - `response.write` 设置响应体
+    - 可多次使用 返回多个内容
+    - 一般用了write 在end里就不设置响应体了
+- 09_练习_HTTP响应练习
+  - 响应体返回标签 浏览器渲染
+  - 豆知识：`` 反引号 可以带换行
+  - `table tr:nth-child(odd)`只设置单数行的css
+  - js代码 <script>标签内写
+- 10_练习_响应文件内容
+  - `end(fs.readFileSync(pathOfHtml))`
+  - end方法参数可以是字符串or buffer
+  - 修改外部文件内容可以不用重新启动服务
+- 网页资源加载基本过程
+  - /资料/page
+  - 无关请求
+    - ws请求 vscode插件 让浏览器发送的 自动刷新功能
+    - favicon.ico请求 浏览器自动行为
+  - 请求顺序
+    - index.html请求 获取html内容
+    - index.css请求 读到需要index.css时发送http请求
+    - h5.png请求 读到需要图片时发送请求
+      - 没有响应体 看预览标签页
+    - index.js请求 读到需要js时发送请求
+  - 异步请求 并行发送
+- 11_练习_响应练习扩展 实现网页引入外部资源
+  - index.css link标签引入
+  - index.js <script src="./index.js">引入
+  - response回调函数需要定义不同请求的响应
+    - url.pathname判断
+- 静态资源和动态资源
+- 12_搭建静态资源服务
+  - 同步fs回调函数不接err 有处理方法
+- 静态资源目录/网站根目录
+  - `let root = __dirname + '/page';` 放静态资源的文件夹
+    - 根目录/pathname
+  - live-server/hbuilder/webstorm插件启动服务时根目录是vscode打开的文件夹（よくわからん）
+    - live-server默认端口5050 URL→localhost:5050/文件位置/文件名
+- 13_网页中的URL-绝对路径
+  - 不带协议 //xxx.com
+    - 和当前网页协议拼接 复制粘贴一下可以显示
+    - 服务器端返回301重定向 重新发送请求
+  - 不带基本URL /xxx
+    - 和当前网页基本URL拼接
+    - 未来可能更换主机名的网站用得多
+- 13_网页中的URL-相对路径
+  - 如果../是基本URL ../../还会在基本URL
+  - 相对路径参照当前页面URL 不可靠 
+- 13_网页中URL使用场景小结
+  - 相对路径 ./css/app.css 随着页面URL变化而变化 不可靠
+  - 绝对路径 /css/app.css 与协议IP端口号拼接
+- 13_设置MIME类型
+  - 媒体类型/资源类型
+  - 设置响应头 返回类型
+    - 非必须 浏览器有mime嗅探功能
+  - `path.extname(文件路径)` 获得扩展名 .html
+  - `path.extname(文件路径).slice(1)` 从字符串/数组第1个元素开始截取 html
+  - `mimes[ext]` mimes对象中以ext为下标的值 `对象[属性]`
+  - 不知道的类型选下载文件类型
+- 13_解决乱码问题
+  - 1设置响应头 *优先级更高
+  - 2meta标签
+  - 外部资源没有必要设置字符集 js, css, 图片..
+    - 直接打开还是会乱码
+    - but在资源回到网页时 会根据网页html字符集做解析
+- 13_完善错误处理
+  - err是一个对象 code错误类型
+- 13_GET和POST场景与区别
+  - GET参数在URL后 POST在请求体中（不绝对）
+  - GET上限2K

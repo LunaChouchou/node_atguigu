@@ -32,7 +32,7 @@ const server = http.createServer((request, response) => {
   let {pathname} = new URL(request.url, 'http://127.0.0.1');
   //声明一个变量
   let root = __dirname + '/page';
-  // let root = __dirname + '/../';
+  // let root = __dirname + '/../'; // 代码文件夹
   //拼接文件路径
   let filePath = root + pathname;
   //读取文件 fs 异步 API
