@@ -21,15 +21,15 @@
     - from 一个字符串or数组转为buffer
       - Unicode（兼容ASCII）字符（包含数字）对应的2进制数字
 - 操作与注意点
-  - **buf 直接输出Buffer 显示16进制**
+  - **buf 直接输出Buffer 2进制的Buffer 显示为16进制**
     - `console.log(buf)`
     - `<Buffer 68 65 6c 6c 6f>`
-  - **buf.toString() Buffer→字符串 默认utf8**
+  - **buf.toString() 2进制的Buffer→字符串 默认utf8**
     - `console.log(buf.toString())`
     - `hello`
   - Buffer类似于数组 buf[0]返回的是一个10进制的数字
     - 可以更改元素 buf[0]=95
-  - **buf[0] 输出数组元素 显示10进制**
+  - **buf[0] 输出数组元素 10进制（的数字）**
     - `console.log(buf[0])`
     - `104`
   - **buf[0].toString(2) 10进制（的数字！）→2进制（的字符串！）**
@@ -143,11 +143,11 @@
   - /... 盘符根目录
 - fs相对路径的bug
   - fs（js全般）相对路径的参照物不是js文件所在目录 而是命令行工作目录
-    - 仅限于执行js脚本的情况？
+    - 与是不是入口文件、直接执行脚本/服务器上开启项目无关 只与node命令工作目录有关
   - 扩展：工作目录/文件所在目录
-    - 370行 live-server开启根目录为vscode打开的文件夹
+    - 本文件378行附近 live-server开启根目录为vscode打开的文件夹
     - 工作目录
-      - 执行`node myScript.js`时 读到有相对路径的语句
+      - 执行`node myScript.js`时 读到js文件中有相对路径的语句
     - 文件所在目录
       - 在模块中引入其他模块时require语句
         - 个人理解：src下文件编译时会被构建工具处理 所以根据编译前文件夹结构使用相对路径没有问题
@@ -156,6 +156,7 @@
           - public文件夹下内容不会被编译 所以根据文件夹结构引入没有问题
           - public文件夹浏览器有机会直接请求 在浏览器请求时 这些文件所在目录/文件内相对路径中包含的根目录public会被替换成基本URL 所以public下的资源还会有对基本URL的解释产生分歧而造成的问题（见react_staging_12_使用路由样式丢失问题 为什么路由路径会让基本URL发生偏差未能理解 路由应该指的是浏览器地址栏里写的东西用于浏览器判断当前要显示的页面 基本URL应该更偏向浏览器内部发送请求的地址）
   - `__dirname` like全局变量 所在文件的目录的绝对路径
+    - 在服务器上开启的项目会返回生成文件所在的目录（C:/path... /path...之类的） 可能与源代码内文件位置有所不同 是一个机械性行为
 - fs练习 批量重命名
   - 遍历数组 forEach(item => {})
   - 元素拆分 item.split('-') 拆分后是数组
@@ -379,8 +380,8 @@
     - live-server默认端口5050 URL→localhost:5050/文件位置/文件名
 - 13_网页中的URL-绝对路径
   - 不带协议 //xxx.com
-    - 和当前网页协议拼接 复制粘贴一下可以显示
-    - 服务器端返回301重定向 重新发送请求
+    - 复制粘贴一下可以显示和当前网页协议拼接后结果
+    - 发送后服务器端返回301重定向 重新发送请求
   - 不带基本URL /xxx
     - 和当前网页基本URL拼接
     - 未来可能更换主机名的网站用得多
@@ -409,3 +410,40 @@
 - 13_GET和POST场景与区别
   - GET参数在URL后 POST在请求体中（不绝对）
   - GET上限2K
+
+## 模块化
+- Node.js模块化介绍
+  - 1个文件就是1个模块
+- 01_模块化初体验
+  - `module.exports = tiemo;` 暴露1个数据
+- 02_模块暴露数据
+  - ①`module.exports` exports是1个属性
+    - 暴露多个数据 包成1个对象
+      ```js 
+      module.exports = {
+        tiemo:tiemo, 
+        niejiao:niejiao
+      }
+      ```
+  - ②`exports` exports是1个独立变量
+    - `exports.tiemo = tiemo;`
+    - 暴露多个写多个
+  - exports = module.exports = {} 指向相同
+    - require的返回结果是目标模块中module.exports的值而非exports
+    - `exports = tiemo;``exports = {tiemo:tiemo};` 错误 重新赋值了exports
+    - `module.exports.tiemo = tiemo;` 正确
+- 03_Node.js导入模块
+  - fs模块推荐绝对路径
+  - require推荐相对路径 不会被工作路径影响
+  - json文件不用暴露
+  - 省略js/json后缀时 同名优先js
+  - 其他扩展名/无扩展名 默认js
+- 04_导入文件夹的情况
+  - package.json和index.js都没有的话就不能导入文件夹
+    - 需要精确到导入的js文件（main指示或文件名index）
+- 05_require导入的基本流程
+  - `arguments.callee.toString()` 函数代码
+    - fromGPT：模块的加载过程会被包装在一个函数中执行，这个函数的签名看起来与传统的函数定义很相似，这个函数被称为模块的包装函数（Module Wrapper Function）。
+  - `(function (){})()` 立即执行函数
+  - 把模块对象缓存
+- 06_CommonJS模块化规范
