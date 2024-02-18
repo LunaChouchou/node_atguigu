@@ -1,0 +1,120 @@
+## fs模块
+- 写入文件
+  - fsAPI file system
+  - 实现与硬盘的交互
+  - 导入模块 
+    - `const fs = require('fs');`
+    - require全局函数
+      - import是es6语法 异步导入 执行到用的时候导入
+      - require是commonjs 同步导入 执行到require的时候导入
+  - `fs.writeFile('路径', '内容', [option], 接err回调函数)`
+    - 成功时返回null
+- 同步与异步
+  - `writeFile` 异步
+    - JS主线程
+    - I/O线程
+    - write结束后 回调函数压入到任务队列中执行
+    - 主线程不等待write结果直接执行
+  - `writeFileSync('路径', '内容', [option])` 同步
+- fs追加写入
+  - `appendFile('路径', '内容', [option], 接err回调函数)`
+      ```js
+      err=>{
+      if(err){}} //错误对象强制转boolean是true
+      ```
+  - `appendFileSync('路径', '内容', [option])`
+  - fs模块中加入换行是/r/n 不是<br>
+  - writeFile的option写{flag: 'a'} 可以追加写入 a:append
+    - w 写入
+    - a 追加
+    - r 读取
+- 文件流式写入
+  - `createWriteStream('路径', [option])` 建立通道
+  - `ws.write('内容')`
+  - `ws.close`
+    - 脚本执行完毕后会自动关闭资源
+- 文件写入应用场景
+  - git add -A 存入object文件夹
+  - git/logs/HEAD
+- fs文件读取
+  - `readFile('路径', [option], 接err+data回调函数)`
+    - 全部读到内存中
+    - data文件信息 是一个buffer data.toString
+  - `readFileSync('路径', [option])`
+- 读取文件应用场景
+  - git log 读取文件
+- fs流式读取
+  - 一部分一部分地读到内存中
+  - 处理大文件时提高效率
+  - `createReadStream('路径', [option])`
+  - `rs.on('data',接chunk回调)` 绑定data事件 每次读取一次数据执行一次回调
+    - 每次65536字节 64KB
+  - `rs.on('end', 回调)` end事件
+- fs练习 文件复制
+  - 读取速度一般比写入速度快
+    - 读了很多条 一条一条排队写
+  - `process.memoryUsage()`
+    - 此process
+    - rss整个占用内存大小
+    - （连续执行会变大）
+  - `rs.pipe(ws)` 复制 用得不多
+- fs文件重命名与移动
+  - `fs.rename('路径', '新路径', 接err回调函数)`
+  - `fs.renameSync('路径','新路径')`
+- fs文件删除
+  - `unlink('路径', 接err回调函数)`
+    - `unlinkSync('路径')`
+  - `rm('路径', 接err回调函数)`
+    - `rmSync`
+- fs文件夹操作
+  - 创建
+    - `mkdir('路径', [option], 接err回调函数)`
+    -  `{recursive: true}` 递归创建option
+  - 读取
+    - `readdir('路径', 接err+data回调函数)`
+      - data返回数组 文件夹和文件名
+  - 删除
+    - `rmdir('路径', 接err回调函数)` depricated
+      - 只能删空文件夹
+    - `{recursive: true}` 递归删除option
+    - `rm` 建议使用
+  - 都有Sync版本
+- fs查看资源状态
+  - `('路径', 接err+data回调函数)`
+    - err和data都是对象
+      - atime 最后访问
+      - mtime 最后修改
+      - ctime 最后修改文件状态
+      - birthtime 创建
+      - `data.isFile()` `data.isDirectory()` 判断文件or文件夹
+  - `statSync`
+- fs路径
+  - D:/...
+  - /... 盘符根目录
+- fs相对路径的bug
+  - fs（js全般）相对路径的参照物不是js文件所在目录 而是命令行工作目录
+    - 与是不是入口文件、直接执行脚本/服务器上开启项目无关 只与node命令工作目录有关
+  - 扩展：工作目录/文件所在目录
+    - 本文件378行附近 live-server开启根目录为vscode打开的文件夹
+    - 工作目录
+      - 执行`node myScript.js`时 读到js文件中有相对路径的语句
+    - 文件所在目录
+      - 在模块中引入其他模块时require语句
+        - 个人理解：src下文件编译时会被构建工具处理 所以根据编译前文件夹结构使用相对路径没有问题
+      - html引入css文件
+        - 针对public下文件的个人理解：
+          - public文件夹下内容不会被编译 所以根据文件夹结构引入没有问题
+          - public文件夹浏览器有机会直接请求 在浏览器请求时 这些文件所在目录/文件内相对路径中包含的根目录public会被替换成基本URL 所以public下的资源还会有对基本URL的解释产生分歧而造成的问题（见react_staging_12_使用路由样式丢失问题 为什么路由路径会让基本URL发生偏差未能理解 路由应该指的是浏览器地址栏里写的东西用于浏览器判断当前要显示的页面 基本URL应该更偏向浏览器内部发送请求的地址）
+  - `__dirname` like全局变量 所在文件的目录的绝对路径
+    - 在服务器上开启的项目会返回生成文件所在的目录（C:/path... /path...之类的） 可能与源代码内文件位置有所不同 是一个机械性行为
+- fs练习 批量重命名
+  - 遍历数组 forEach(item => {})
+  - 元素拆分 item.split('-') 拆分后是数组
+  - 数组解构赋值 let [num, name] = data; num和name是变量名
+    - 等效代码
+      ```js
+      let num = data[0];
+      let name = data[1];
+      ```
+  - Number(num) 强制类型转换 String→int
+  - 豆知识：`` 模板字符串 可以更方便地构建包含变量值${xx}的字符串，而不需要使用字符串拼接或连接符号

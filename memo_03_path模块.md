@@ -1,0 +1,15 @@
+## path模块
+- 导入path模块
+- resolve(绝对路径,相对路径) 分析出正确路径
+  - __dirname 分隔符是\ 
+  - /index.html是一个绝对路径
+  - (绝对路径1,绝对路径2,相对路径) →绝对路径2+相对路径
+- sep 分隔符
+  - 设定本系统的分隔符 win \ linux /
+- parse方法 获取路径相关信息
+  - `__filename` like全局变量 文件绝对路径
+  - \ 转义字符 `\\` 给\加上一个转义字符 正确输出\
+  - `parse(路径)`  root盘符，dir文件夹路径，base文件名+扩展名，ext扩展名，name文件名
+- basename方法 获取文件名
+- dirname方法 获取路径
+- extname方法 获取扩展名 .js

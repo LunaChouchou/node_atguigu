@@ -1,0 +1,13 @@
+## 入门
+- nodejs.org
+  - runtime environment
+- cmd
+  - dir /s 显示所有文件内容
+  - d: 切换到d盘
+- NodeJS编码注意事项
+  - 浏览器中的JavaScript
+      - ES, DOM, BOM, AJAX, Storage, **console, 定时器**, alert/confirm...
+  - Node.js中的JavaScript
+      - fs, url, http, util, **console, 定时器**, path...
+- 不能使用BOM和DOM的API
+  - global, globalThis 访问顶级对象 相当于window

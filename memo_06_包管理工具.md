@@ -1,0 +1,85 @@
+## 包管理工具
+- 包管理工具介绍
+- npm介绍与安装
+- npm初始化包
+  - `npm init` 创建一个新包
+    - 默认以工作文件夹名作为包名
+    - `npm init -y` `npm init -yes` 快速创建
+- npm搜索包
+  - `npm s/search 关键字`
+  - npmjs.com
+- npm下载安装包
+  - `npm i/install 包名`
+  - 初始化（init）包后再下载安装包（install）
+  - package-lock.json 包含包和依赖包的信息
+  - require(包名)=导入内置模块
+- require导入npm包的基本流程
+  - require(相对路径)也OK
+  - 文件夹下package.json内main的值（模块化_04）
+  - 当前文件夹下没有node_modules会往上找node_modules
+- 开发依赖与生产依赖
+  - `npm i -S/--save`
+    - 生产依赖包 开发生产都用 dependencies 默认
+  - `npm i -D/--save-dev`
+    - 开发依赖包 开发用 生产不用 devDependencies
+- npm全局安装
+  - `npm i -g`
+  - 不受工作目录位置影响
+  - `npm root -g` 查看全局安装包位置
+- 修改windows执行策略
+  - `set-ExecutionPolicy remoteSigned` 让powershell允许全局安装
+  - cmd和其他工具不需设置
+- 环境变量Path
+  - 类似于数据库索引
+  - 地址栏输入cmd 以文件夹为工作目录打开命令行
+  - 找 某命令.exe/.cmd
+    - 当前文件夹→环境变量Path列表
+  - 在任意位置都能打开某命令程序
+    - 环境变量-Path变量（本用户）/系统变量（所有用户） 配置
+    - 打开新的命令行窗口 适用
+- npm安装 包的所有依赖
+  - `npm i/install` package.json, package-lock.json
+  - `npm i 包名@x.x.x` 安装版本包
+  - `npm r/remove -g 包名` 删除包
+- npm配置命令别名
+  - scripts server "xxxx"
+    - `npm run server`
+  - scripts start "xxxx"
+    - `npm run start` `npm start`
+  - run向上寻找
+- cnpm介绍
+  - 淘宝镜像 & 全局工具包
+    - 可以同步、搜索包
+  - `npm install -g cnpm --registry=https://registry.npmmirror.com`
+- npm配置淘宝镜像
+  - npm也可以下载淘宝镜像包
+  - `npm config set registry https://registry.npmmirror.com/` 直接配置
+  - nrm工具 工具配置
+    - `npm i -g nrm`
+    - `nrm use taobao` 切换镜像地址
+    - `nrm ls` 查看镜像地址
+    - `nrm config list`查看指向
+- yarn介绍
+  - `yarn init`
+  - `yarn add xxxx`
+  - `yarn add xxxx --dev`
+  - `yarn` 安装所有包 相当于i
+  - `yarn remove xxxx`
+  - 别名 package.json scripts server "xxxx"
+    - `yarn server` 无需加run
+  - `yarn global add xxx`全局安装不好使 
+    - `yarn global bin`查看全局安装包位置
+    - 没有配置到环境变量Path中 需要手动配置
+- npm和yarn的选择
+  - `yarn config set registry https://registry.npmmirror.com/`配置淘宝镜像
+  - `yarn config list`查看指向
+  - yarn.lock 固定包版本
+  - package-lock.json npm和cnpm的锁文件
+- npm发布一个包
+  - 跳过
+- npm更新与删除包
+  - 跳过
+- 包管理工具扩展介绍
+- nvm介绍与使用
+  - 管理node版本
+  
