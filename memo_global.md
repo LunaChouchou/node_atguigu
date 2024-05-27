@@ -1,3 +1,7 @@
+- 注意
+  - 所有memo需要配合代码和尚硅谷pdf阅读
+    - 与代码和pdf重复的内容不再在memo中赘述
+    - 但有代码写法的部分会给代码列表
 - 退出python交互模式 ctrl+z
 - node -v
 - python --version
@@ -11,4 +15,4 @@
       - let var = null;
     - {}表示引用空的普通对象
       - let var = {};
-- 
+- vscode ctrl+k→m 切换  文件格式

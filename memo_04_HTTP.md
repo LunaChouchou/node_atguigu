@@ -115,19 +115,22 @@
         - 绑定data事件 接收到数据时触发
         - 绑定end事件 数据传完时触发
         - （response.end 返回响应体）
+    - fromGPT：
+      - 在HTTP请求中，请求报文的主体数据（请求体）是通过数据流的形式发送的。因此，通过 req.on('data', ...) 监听的数据流事件只能获取请求体数据，而不能获取请求头和请求行。
+      - 请求头和请求行是在HTTP请求的初始部分发送的，并且不是通过数据流的形式发送的。因此，我们可以通过 req.method、req.url 和 req.headers 这样的属性直接从 req 对象中获取请求行和请求头的信息。
     - post的表单内容会在请求体里
 - **url.method/param**
   - 05_获取请求路径与查询字符串(旧)
     - 导入url模块 用于解析url的
-    - `let res = url.parse(request.url)` 对象
-      - `res.pathname` pathname属性 路径 基本URL右侧 /开始内容
+    - `let parsedUrl = url.parse(request.url)` 对象
+      - `parsedUrl.pathname` pathname属性 路径 基本URL右侧 /开始内容
       - query
         - search属性 '?keyword=h5'
         - query属性 'keyword=h5'
         - 都是字符串
-    - `let res = url.parse(request.url,true)` if true query属性将会被传递为一个对象
+    - `let parsedUrl = url.parse(request.url,true)` if true query属性将会被传递为一个对象
       - [Object: null prototype] 提示这个对象的原型是null
-      - `res.query.keyword`
+      - `parsedUrl.query.keyword`
       - 如果请求里不含keyword 返回undefined
   - 06_获取请求路径与查询字符串(新)
     - 实例化URL对象 

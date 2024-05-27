@@ -13,6 +13,8 @@
   - 初始化（init）包后再下载安装包（install）
   - package-lock.json 包含包和依赖包的信息
   - require(包名)=导入内置模块
+  - 没有node_module的话会在package.json（或package-lock.json？）位置新建node_modules
+    - 都没有的话会在当前文件夹下新建node_modules
 - require导入npm包的基本流程
   - require(相对路径)也OK
   - 文件夹下package.json内main的值（模块化_04）
@@ -82,4 +84,3 @@
 - 包管理工具扩展介绍
 - nvm介绍与使用
   - 管理node版本
-  
