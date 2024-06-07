@@ -7,14 +7,14 @@ const app = express();
 //创建路由
 app.get('/other', (req, res) => {
   //跳转响应
-  // res.redirect('http://atguigu.com');
+  res.redirect('http://atguigu.com');
   //下载响应
-  // res.download(__dirname + '/package.json');
+  res.download(__dirname + '/package.json');
   // JSON 响应
-  // res.json({
-  //   name: '尚硅谷',
-  //   slogon: '让天下没有难学的技术'
-  // })
+  res.json({
+    name: '尚硅谷',
+    slogan: '让天下没有难学的技术'
+  })
   //响应文件内容
   res.sendFile(__dirname + '/test.html');// path.resolve()
 });

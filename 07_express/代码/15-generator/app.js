@@ -13,10 +13,11 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// 一些中间件
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(express.json()); // 针对请求体
+app.use(express.urlencoded({ extended: false })); // 针对请求体
+app.use(cookieParser()); // 针对cookie
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);// 设置路由前缀

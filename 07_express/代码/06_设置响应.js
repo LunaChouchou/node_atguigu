@@ -7,17 +7,17 @@ const app = express();
 //创建路由
 app.get('/response', (req, res) => {
   //原生响应
-  // res.statusCode = 404;
-  // res.statusMessage = 'love';
-  // res.setHeader('xxx', 'yyy');
-  // res.write('hello express ')
-  // res.end('response');
+  res.statusCode = 404;
+  res.statusMessage = 'love';
+  res.setHeader('xxx', 'yyy');
+  res.write('hello express ')
+  res.end('response');
 
   //express 响应
-  // res.status(500);
-  // res.set('aaa','bbb');
-  // res.send('你好 Express');
-  res.status(500).set('abc','def').send('这都是 OK 的');
+  res.status(500);
+  res.set('aaa','bbb');
+  res.send('你好 Express');
+  res.status(500).set('abc','def').send('这都是 OK 的'); // 链式调用
   
 });
 

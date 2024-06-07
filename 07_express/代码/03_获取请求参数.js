@@ -7,16 +7,16 @@ const app = express();
 //创建路由
 app.get('/request', (req, res) => {
   //原生操作
-  // console.log(req.method);
-  // console.log(req.url);
-  // console.log(req.httpVersion);
-  // console.log(req.headers);
+  console.log(req.method); // GET
+  console.log(req.url); // /request
+  console.log(req.httpVersion); // 1.1
+  console.log(req.headers); // 请求头
 
-  // //express 操作
-  // console.log(req.path);
-  // console.log(req.query);
-  // //获取 ip 
-  // console.log(req.ip);
+  //express 操作
+  console.log(req.path); // =url.pathname
+  console.log(req.query);
+  //获取 ip 
+  console.log(req.ip);
   //获取请求头
   console.log(req.get('host'));
 

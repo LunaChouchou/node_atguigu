@@ -9,6 +9,7 @@ app.use((req, res, next) => {
   //检测请求头中的 referer 是否为 127.0.0.1
   //获取 referer
   let referer = req.get('referer');
+  console.log(referer);
   if(referer){
     //实例化
     let url = new URL(referer);
