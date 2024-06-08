@@ -35,7 +35,7 @@ build/
 # Ignore .vs directory (Visual Studio)
 .vs/
 
-# Ignore binary files
-.mp4
-.zip
-.exe
+# Ignore big files
+*.mp4
+*.zip
+*.exe
