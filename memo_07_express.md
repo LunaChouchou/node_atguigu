@@ -31,7 +31,7 @@
     - 查看Wifi/本机IPv4地
   - `req.body` 请求体 fromGPT
 - 04_获取路由参数
-  - :id 占位符 可用.或/分割
+  - :id 占位符 前后可用.或/分割
     - '/search/:query'
     - '/search/:query/xxx'
     - '/search/:query.html'
@@ -78,9 +78,9 @@
      - 校验身份、权限
 - 10_静态资源中间件
   - 静态资源目录/网站根目录
+  - http://localhost:3000/静态资源目录下路径 自动处理请求
   - `app.use(express.static(__dirname + '/public'));`
     - 定义静态资源文件夹路径
-  - http://localhost:3000/静态资源目录下路径
   - 会自动设置mime类型和字符集
 - 静态资源中间件注意点
   - from弹幕：中间件和路由（get和use）都是基于同方法实现的

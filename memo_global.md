@@ -16,3 +16,7 @@
     - {}表示引用空的普通对象
       - let var = {};
 - vscode ctrl+k→m 切换  文件格式
+- 主机名和域名的区别 fromGPT
+  - 主机名（ホスト名）：desktop-01, server-02, printer-03
+  - 域名（ドメイン名）：example.com, university.edu, shop.online
+  - 总之，主机名主要用于本地网络中设备的识别，而域名用于互联网上的资源定位和访问。
