@@ -1,0 +1,39 @@
+## Mongodb
+- 01_介绍
+- 02_核心概念
+  - database数据库
+  - collection集合
+    - 存储同类型数据
+  - document文档
+    - 属性（字段）
+- 03_下载安装与启动
+  - 27017端口 mongodb协议
+  - mongod.exe服务端程序
+  - mongo.exe客户端程序
+  - 把mongod的path配置到path
+  - 服务端选中文本服务会停止 按enter恢复
+- 04_数据库与集合命令
+  - 命令行交互
+    - 库
+      - `use 数据库名` 切换库 没有会创建
+      - `show dbs` 查看库
+        - 不显示没有数据的库 需要创建集合
+      - `db.createCollection('users')` 创建users集合
+        - 一般把集合名设定为复数
+      - `db` 查看当前库
+      - `db.dropDatabase();` 删除当前库
+    - 集合
+      - `show collections` 查看集合
+      - `db.集合名.drop()` 删除集合
+      - `db.集合名.renameCollection('newName')` 修改集合名
+- 05_文档命令
+  - `db.users.insert({name: '张三', age: 18})` 插入文档 **insert**
+    - 返回WriteResult nInserted插入数
+  - `db.users.find();` 查看文档 **select ***
+    - `db.users.find({age: 18});` 查询文档 **select**
+  - `db.users.update(查询条件,新的文档)` 更新文档 **update set** 
+    - `db.users.update({name: '张三'}, {age: 30})` 默认所有属性全部更新 name属性会消失
+    - 返回WriteResult nMatched匹配数 nModified更新数
+    - `db.集合名.update({name:'张三'},{$set:{age:19}})` $set 属性名 部分更新 name属性不会消失
+  - `db.users.remove({name:'张三'}})` 删除文档 **delete**
+- 06_数据库操作应用场景
