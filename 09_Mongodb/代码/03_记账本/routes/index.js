@@ -44,13 +44,13 @@ router.post('/account', (req, res) => {
     ...req.body,
     //修改 time 属性的值
     time: moment(req.body.time).toDate()
-  }, (err, data) => {
-    if(err){
-      res.status(500).send('插入失败~~');
-      return
-    }
+  }).then(() => {
     //成功提醒
-    res.render('success', {msg: '添加成功哦~~~', url: '/account'});
+    res.render('success', { msg: '添加成功哦~~~', url: '/account' });
+  }).catch((err) => {
+    res.status(500).send('插入失败~~~');
+    console.log(err);
+    return;
   })
 });
 
