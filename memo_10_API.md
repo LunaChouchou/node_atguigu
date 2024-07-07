@@ -14,6 +14,7 @@
   - `npm i -g json-server` 全局安装
   - 在json目录运行 `json-server --watch db.json`
   - 搭建一个服务 path是json下的数据结构
+    - 可以进行get,post,delete等操作
   - （感觉可以用来当测试的スタブ）
 - 接口测试工具apipost
   - 还有apifox, postman
@@ -30,8 +31,73 @@
     - 需要请求体 写需要更新的字段
 - Apipost公共参数与文档功能
   - 默认添加请求头参数 同一文件夹下的request有公用参数
-  - 生成接口文档
+  - 生成接口文档 
 - 接口测试工具postman
   - 上面是请求相关 下面是响应相关
     - 想看请求头看console里的打印
   - 设置全局参数 {{}}占位符使用
+## 案例功能完善_记账本
+- 01_结合API功能
+  - 开启mongod，开启accounts
+  - 删除views/users.js, app.js下的user路由
+  - 网页端路由规则web文件夹
+    - routes下新建web文件夹，把index.js移动进去，自动更新index.js的import
+    - app.js更新index.js路径
+    - index.js删除lowdb相关导入代码（因为自动更新index.js的path时没有更新lowdb使用的绝对路径导致报错找不到文件）
+  - 接口路由规则api文件夹
+    - routes下新建api文件夹，新建account.js 与账单相关的接口路由文件
+    - 复制index.js内容到account.js
+    - 内容一样，需要修改
+  - 在app.js中加入account路由规则文件
+  - `app.use('/api', accountRouter);`使用account路由 使之使用时必须在前面加/api
+- 02_获取账单接口
+  - account.js /account
+    - res.json()内容一般有3项
+      - code '20000'或'0000'或'000000'来表示 后2非0表示失败
+      - msg '读取成功'
+      - data 数据
+      - 不用另返回状态码 一般接口服务的状态信息在json的code里 不需要通过响应状态码来设置
+    - 把成功响应从render改为json
+      - 测试
+    - 把失败响应改为json
+      - 失败code1001
+      - 关掉mongod来测试失败
+- 03_创建账单接口
+  - account.js /account.create
+    - 删除添加记录规则 因为api不会响应html
+  - account.js POST /account
+    - 修改成功的响应
+      - 表单形式的请求体其实是querystring字符串
+        - fromGPT：querystring
+          - `name=John+Doe&age=30&city=New+York` 指的是这种形式的字符串
+          - get放url里 post放请求体里 post的表单实际上被转为这种形式后发送
+      - 发送json测试
+        - 看AccountModel格式写json
+      - 表单（querystring）和json都可发
+        - 因为app.js注册了可解析json和querystring的中间件
+          ```js
+          app.use(express.json());
+          app.use(express.urlencoded({ extended: false }));
+          ```
+        - express memo 11_获取请求体数据 body-parser详解
+  - 修改失败的响应
+    - 在发送json中删除必填项title用以测试
+  - 建议添加表单验证逻辑
+- 04_删除账单接口
+  - get方式改为delete
+  - 删除成功返回的data可写null或{}
+  - fromGPT：状态码和自定义码
+    - 可200+自定义码 也可混用 交给客户端处理
+    - res.json()、res.send()、和 res.end() 等方法默认会发送 200 状态码
+- 05_获取单条账单接口
+  - 新建一个get /account/:id路由
+    - findById('id')
+  - fromGPT：res前可写return
+    - 使用 return 可以确保函数执行到此处时立即返回，从而避免多次发送响应的错误
+    - 总结：前/后/不写都可 分情况明确表示结束运行 编程好习惯
+- 06_更新账单接口
+  - 新建一个patch /account/:id 路由 做局部更新
+    - updateOne({条件},{更新内容})
+    - 返回的data是mongodb的统计数据 不符合RESTful
+      - 再次查询数据库 改为返回该数据
+    - 回调地狱 回调函数中套回调函数 不优雅
