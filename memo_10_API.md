@@ -1,0 +1,37 @@
+## API
+- 接口介绍
+  - 前后端通信
+  - 1个接口就是服务端的一个路由规则
+  - 返回结果一般是json
+  - 数据接口 和java的if不一样
+  - free-api.com 免费接口库
+  - 接口文档
+- RESTful API
+  - 特殊风格接口
+- json-server工具
+  - 快速搭建RESTful API服务工具包
+    - 临时搭建一些服务 之后地址切换到正式服务
+  - `npm i -g json-server` 全局安装
+  - 在json目录运行 `json-server --watch db.json`
+  - 搭建一个服务 path是json下的数据结构
+  - （感觉可以用来当测试的スタブ）
+- 接口测试工具apipost
+  - 还有apifox, postman
+  - 测试请求体
+    - form-data 表单
+    - x-www-form-urlencoded queryString
+    - raw 原生（包括json）
+      - json内写双引号
+  - json-server会自动维护id 不需要提供
+  - put 完整更新
+    - 会覆盖原来内容 类似于mongodb的update
+  - patch 局部更新
+    - 不会覆盖没传过去的字段
+    - 需要请求体 写需要更新的字段
+- Apipost公共参数与文档功能
+  - 默认添加请求头参数 同一文件夹下的request有公用参数
+  - 生成接口文档
+- 接口测试工具postman
+  - 上面是请求相关 下面是响应相关
+    - 想看请求头看console里的打印
+  - 设置全局参数 {{}}占位符使用
