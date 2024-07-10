@@ -35,7 +35,7 @@
     - `db.users.update({name: '张三'}, {age: 30})` 默认所有属性全部更新 name属性会消失
     - 返回WriteResult nMatched匹配数 nModified更新数
     - `db.集合名.update({name:'张三'},{$set:{age:19}})` $set 属性名 部分更新 name属性不会消失
-  - `db.users.remove({name:'张三'}})` 删除文档 **delete**
+  - `db.users.remove({name:'张三'})` 删除文档 **delete**
 - 06_数据库操作应用场景
 ## mongoose
 - mongoose介绍

@@ -1,0 +1,93 @@
+# 会话控制
+- 会话控制介绍
+  - cookie, session, token
+- Cookie的介绍
+  - 浏览器 与域名相关
+  - 请求头项目叫cookie 也可以理解成就是一个请求头
+  - 内部本质是一些键值对
+  - 响应头set-cookie 通过响应报文传递 浏览器解析保存cookie
+- 浏览器中操作cookie
+  - 用得比较少
+  - 不同浏览器cookie不共享
+  - 某网站使用其他js css 会用到其他域名的cookie 第三方cookie
+- express中设置cookie
+  - 手顺
+    1. 不用express-generator新建一个express项目
+      - 根目录下`npm init`
+      - `npm i express`
+      - `nodemon .\01_cookies.js`
+    2. 创建/set-cookie路由规则
+      - `res.cookie`返回cookie cookie名'name' 值'zhangsan'
+    3. 向/set-cookie发送请求
+      - 请求报文里没有cookie 正常
+      - 响应头里有set-cookie: name=zhangsan 要求浏览器保存cookie
+      - 浏览器保存cookie信息name
+      - 点击URL左边的i查看此时的cookie
+    4. 再次发送请求
+      - 请求报文里有cookie: name=zhangsan
+      - 这种会在**浏览器关闭时**销毁 在此之前向同域名发送的请求都会包含cookie
+  - 7天免登录
+    - 设置生命周期 res.cookie第3个参数可以设定 {maxAge: 60 * 1000} 值单位ms
+    - 响应头set-cookie指示浏览器保存该cookie for 60s
+      - 响应头里的数字单位s Expires是0时区时间需要加8h 日本9h
+    - 此后**60s内**请求头内都会有cookie: name=lisi 关闭浏览器不会销毁
+    - fromGPT：服务器端不会主动无效化该cookie 可以通过发送max-age=0的cookie来促使服务器端删除
+- express中删除cookie
+  - 手顺
+    1. 创建/remove-cookie路由规则 示例代码用get
+    2. `res.clearCookie('键')`
+       - 多项内容显示多项set-cookie行
+    3. 向/remove-cookie发送请求
+    4. 响应报文返回name=;Expires=1970
+- express中读取cookie
+  - 安装cookie-parser包 `npm i cookie-parser`
+    - npmjs.com 解析请求中的cookie
+  - 导入包 require
+    - 类似body-parser包
+  - 设置中间件 app.use(cookieParser());
+  - 新建路由规则/get-cookie
+    - req.cookies 获取cookie
+  - 向/get-cookie发送请求
+    - 响应报文收到set-cookie
+  - 再次发送请求
+    - 请求报文包含cookie
+  - 服务端可提取req.cookies
+- session的介绍
+  - 与用户建立连接 服务器创建session对象
+    - 以响应cookie的形式返回session_id
+    - 浏览器保存该cookie向服务器发送请求
+    - 服务端通过sid识别客户端身份
+- session举例说明
+- session中间件配置 express-session安装与配置
+  - `npm i expresss-session`操作session
+    - 默认保存到内存
+  - `npm i connect-mongo`连接mongodb进行操作
+    - 将session信息存到db中
+  - require引入
+  - 使用示例代码注册中间件
+  - `app.use(session({}));`
+    - session接受1个对象 返回1个函数
+      - name 响应cookie的名字 'sid'
+      - secret 秘钥 加盐 提高安全等级
+      - saveUninitialized 是否自动创建session对象
+      - resave session超时
+      - store 设置mongodb连接URL
+      - cookie 设置响应内cookie的特性 设置的是set-cookie内的cookie
+        - httpOnly set-cookie:sid=xxxx;httpOnly 仅传输使用 使前端js不能对该cookie访问
+        - 不加可通过document.cookie获取 不太安全
+- express中session操作
+  - 开启mongod 开启02_session.js db会新建一个sessions集合
+  - 新建get/login路由规则 登录
+    - 设置生成session
+      - req.session.xxx = 'xxxx'
+    - 响应 res.send
+    - 发送login请求
+      - 返回set-cookie包含sid
+      - db中生成session
+        - _id 即sid
+  - 新建get/cart路由规则 读取session
+    - 判断session里是否存在用户数据
+    - 使用了connect-mongo可以直接取得req.session
+  - 新建get/logout路由规则 销毁session
+    - `req.session.destroy(()=>{成功后操作})`
+- session和cookie的区别
