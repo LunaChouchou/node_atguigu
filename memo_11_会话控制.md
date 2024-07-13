@@ -11,7 +11,7 @@
   - 不同浏览器cookie不共享
   - 某网站使用其他js css 会用到其他域名的cookie 第三方cookie
 - express中设置cookie
-  - 手顺
+  - 步骤
     1. 不用express-generator新建一个express项目
       - 根目录下`npm init`
       - `npm i express`
@@ -33,7 +33,7 @@
     - 此后**60s内**请求头内都会有cookie: name=lisi 关闭浏览器不会销毁
     - fromGPT：服务器端不会主动无效化该cookie 可以通过发送max-age=0的cookie来促使服务器端删除
 - express中删除cookie
-  - 手顺
+  - 步骤
     1. 创建/remove-cookie路由规则 示例代码用get
     2. `res.clearCookie('键')`
        - 多项内容显示多项set-cookie行
@@ -79,15 +79,75 @@
   - 开启mongod 开启02_session.js db会新建一个sessions集合
   - 新建get/login路由规则 登录
     - 设置生成session
-      - req.session.xxx = 'xxxx'
+      - `req.session.xxx = 'xxxx'`
+      - db中保存session
+        - _id 即sid
     - 响应 res.send
     - 发送login请求
       - 返回set-cookie包含sid
-      - db中生成session
-        - _id 即sid
   - 新建get/cart路由规则 读取session
     - 判断session里是否存在用户数据
     - 使用了connect-mongo可以直接取得req.session
   - 新建get/logout路由规则 销毁session
     - `req.session.destroy(()=>{成功后操作})`
 - session和cookie的区别
+## 案例功能完善_记账本_session
+- 01_响应注册页面
+  - 新建auth.js路由reg路由规则 用ejs渲染reg页面
+  - app.js导入auth.js 注册router中间件
+  - 新建reg.ejs
+  - views下文件过多可以归档 新建auth文件夹
+    - 更新auth.js路由规则下路径为auth/ejs
+- 02_注册用户
+  - reg.ejs
+    - 添加user和pw的name属性 必须
+    - 添加表单post和aciton
+  - auth.js添加post路由
+  - 创建用户模型
+  - auth.js
+    - 在post路由应做表单验证（保证收到的req.body与db结构一致 插入时不会出现错误）
+    - 导入模型
+    - 插入db
+      - `create(req.body)`和`create({...req.body})`效果相同 后者防止修改原始数据
+    - 给密码加密 md5包 单向加密 不可逆
+      - `npm i md5`
+      - 导入md5
+- 03_用户登录
+  - auth.js添加登录页面路由规则
+  - 新建登录ejs
+  - 查询数据库 若查询不到data返回null 不会走error
+    - 需要判断data是否为空
+- 04_写入session
+  - `npm i express-session connect-mongo`
+  - 引入到app.js 设置express-session中间件
+    - 导入配置文件 定义URL 使用占位符要用``包起来 ''不行
+  - 登录路由规则 写入session
+    - `req.session.username = data.username;`
+    - data._id 文档id data.session._id sid
+- 05_用户登录检测
+  - if(req.session.username)
+    - fromGPT：
+      - req.session 实际上是服务端在处理请求时，根据请求cookie中的 session ID 从数据库中加载到内存中的 session 数据对象
+      - 如果在请求处理中修改了 req.session，修改后的数据会在响应发送回客户端之前被保存回 MongoDB 中
+  - 封装中间件
+    - 管理中间件 新建middleware文件夹
+    - 导入到index.js 注册中间件到路由规则
+- 06_退出登录
+  - auth.js添加get/logout路由规则
+    - 销毁session`req.session.destroy`
+  - 添加退出登录a链接
+- 07_CSRF跨站请求伪造
+  - 情况：attack.html中包含/logout请求 account会退出登录
+  - 跨站 b网站往a网站发请求 还携带了a网站的cookie
+  - 解决：把退出登录的请求改为post a改为form
+  - 原因：link, image, script这些标签在加载过程中也会发请求 但都是get
+  - 尽量用post
+- 08_首页和404页面
+  - 在index.js添加首页路由规则
+    - / → /account → 检查登录 → /login
+    - 调整导入语句位置 放在上面
+    - var, let换成const
+  - 在app.js自带404配置
+    - 新建404.ejs模板
+    - 如果想插入图片 保存位置要在public下
+  - 公益404

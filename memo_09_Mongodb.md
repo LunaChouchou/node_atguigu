@@ -194,7 +194,7 @@
       - moment是一个函数
         - `moment('2024-06-23').toDate()`
         - 2024-06-23→Moment对象→Date对象
-      - `.create{...req.body, time: moment(req.body.time).toDate()}`
+      - `.create({...req.body, time: moment(req.body.time).toDate()})`
         - 右边的time（对象）会覆盖左边第一次的time（字符串）
       - req.body.time是可以人为修改的
 - 04_读取数据库
