@@ -1,0 +1,41 @@
+# 项目上线
+- 01_代码上传仓库
+  - 初始化仓库 github创建仓库
+  - 添加本地仓库对应的远程仓库=添加URL别名
+  - ...→远程→添加远程库
+- 02_购买云服务器
+- 03_连接云服务器与软件安装
+  - 复制服务器公网IP
+  - 开始-远程桌面连接 输入IP地址
+    - 默认用户名是本地电脑用户名 改为administrator
+    - 安装git nodejs mongodb
+      - mongodb用安装包安装的 会自动启动mongodb服务 不需要手动运行mongod
+- 04_代码克隆服务启动
+  - 新建文件夹www 存放项目用
+    - `git clone 远程仓库地址`
+    - 安装依赖 npm i
+    - 安装nodemon `npm i -g nodemon`
+      - 实际服务用node
+    - 启动服务
+  - 可以用公网ip访问该项目了
+  - 配置开发和生产环境的scripts
+    - `npm run server`
+- 05_域名购买与解析
+  - 在国内服务器使用域名需要备案
+  - 解析设置
+    - 添加记录 A类型 添加域名与IP的映射
+- 06_配置HTTPS证书
+  - 使用certbot获取证书 在服务器端完成
+  - 安装certbot
+  - 管理员身份 `certbot certonly --standalone`
+    - 输入本机IP对应的域名 请求证书
+  - 修改www文件代码
+    - 导入https, 修改createserver, 修改端口为443
+  - 可以再开启一个server2开80和443两个端口 http和https都可访问
+  - 证书有3个月周期 可以通过命令更新
+- 前后端开发扩展介绍
+  - js有事件 绑定画面元素
+  - 缓存服务 使用的介质是内存 db是硬盘
+- 完结篇
+  - Ajax, promise, axios
+  - FFF
