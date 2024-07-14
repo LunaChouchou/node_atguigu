@@ -151,3 +151,57 @@
     - 新建404.ejs模板
     - 如果想插入图片 保存位置要在public下
   - 公益404
+# Token介绍
+- token的介绍
+  - 主要用于app 网页中session和cookie用得多
+  - 校验用户身份之后创建
+  - 包含用户信息
+  - cookie自动携带 token手动携带
+    - 不能自动携带所以可以避免CSRF
+  - from弹幕：session不能跨服务器 可以保存在redis上
+- jwt介绍与使用
+  - json web token
+  - 步骤
+    - 初始化npm包
+    - `npm i jsonwebtoken`下载包
+    - 导入jwt
+    - 生成token
+      - 验证身份后
+      - `jwt.sign(用户数据(一般是对象), 加密字符串, 配置对象)`
+      - 配置对象expiresIn单位s
+      - 会返回一个token值
+    - 校验token
+      - 后续请求
+      - `jwt.verify(token, 加密字符串, 接err和data的回调函数)`
+## 案例功能完善_记账本_token
+- 01_登录响应token
+  - 现状：api端没有验证身份
+  - 步骤
+    - 创建一个api端auth.js
+    - 登录操作 修改response为res.json
+      - 失败code定为200x api用
+    - 把写入session改为响应token
+      - 安装jwt`npm i jsonwebtoken`
+      - jwt.sign
+      - 导入auth.js
+    - app.js中导入api/auth.js 注册
+    - 用postman测试
+- 02_token校验
+  - 往api/account.js中加入token校验中间件
+    - 导入jwt
+  - 客户端的token如何传递由服务端决定 一般放在请求头 名字不固定 token/tk/userkey
+  - 封装校验中间件 注册 移动到mw文件夹下
+- 03_token功能完善
+  - 秘钥有复用 转移到配置文件
+    - 导入到api/auth.js和checkTokenMiddleware.js
+  - 校验token后应该保存用户信息
+    - 现在只是通过身份校验可以看到所有账单 将来需要特定该用户显示特定账单
+    - 从token读取用户信息到req里 后续请求可以获得用户信息进而查询db等等
+- 04_本地域名配置
+  - 修改"C:\Windows\System32\drivers\etc\hosts"
+  - 换行写入 127.0.0.1 www.myaccount.com 中间可多个空格
+  - http://www.myaccount.com:3000 访问
+  - 在www文件中把端口号改为80就可以不用在地址栏写端口号了
+    - process.env.PORT 获取当前程序环境变量
+  - hosts配置域名和ip的映射
+    - 浏览器dns缓存→hosts→DNS
